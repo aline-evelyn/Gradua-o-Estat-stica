@@ -1,32 +1,17 @@
-name: Deploy Python App to Heroku
+name: CD Pipeline
 
 on:
   push:
     branches:
-      - main  # O deploy ocorrerá quando houver push na branch 'main'
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - name: Deploy to Heroku
+        run: |
+          git remote add heroku https://git.heroku.com/nome-da-aplicacao.git
+          git push heroku main
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'  # Especifique a versão do Python (ajuste conforme necessário)
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Instala as dependências listadas no requirements.txt
-
-    - name: Deploy to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}  # Chave da API do Heroku armazenada em secrets
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}  # Nome da aplicação Heroku armazenada em secrets
-      run: |
-        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-        git push heroku HEAD:main -f
