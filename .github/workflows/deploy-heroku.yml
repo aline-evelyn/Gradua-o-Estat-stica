@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Deploy to Heroku
         run: |
-          git remote add heroku https://git.heroku.com/nome-da-aplicacao.git
+          git remote add heroku https://git.heroku.com/sp-weather-tracker.git
           git push heroku main
 
