@@ -1,17 +1,31 @@
-name: CD Pipeline
+name: Deploy to Heroku
 
 on:
   push:
     branches:
-      - main
+      - main  # ou qualquer outra branch que você queira usar para deploy
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploy to Heroku
-        run: |
-          git remote add heroku https://git.heroku.com/sp-weather-tracker.git
-          git push heroku main
 
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Defina a versão do Python usada no seu projeto
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Deploy to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        heroku git:remote -a sp-weather-tracker
+        git push heroku main
